@@ -12,7 +12,7 @@ This project builds and deploys a "Hello World" Go webapp. It provides an exampl
 web application on [CircleCI](https://circleci.com), push the Docker image to an Amazon Elastic Container Registry (ECR), and then deploy to Amazon Elastic Container Service (ECS) using AWS Fargate.
 
 ## Prerequisites
-### AWS Resource Creation
+### Set up required AWS resources
 Builds of this project rely on AWS resources to be present in order to succeed. For convenience, the prerequisite AWS resources may be created using the terraform scripts procided in the `terraform_setup` directory.
 1. Ensure [terraform](https://www.terraform.io/) is installed on your system.
 2. Edit `terraform_setup/terraform.tfvars` to fill in the necessary variable values (an Amazon account with sufficient privileges to create resources like an IAM account, VPC, EC2 instances, Elastic Load Balancer, etc is required). (It is not advisable to commit this file to a public repository after it has been populated with your AWS credentials)
@@ -27,7 +27,7 @@ Builds of this project rely on AWS resources to be present in order to succeed. 
     ```
 4. You can run `terraform destroy` to destroy most of the created AWS resources but in case of lingering undeleted resources, it is recommended to check the [AWS Management Console](https://console.aws.amazon.com/) to see if there are any remaining undeleted resources to avoid unwanted costs. In particular, please check the ECS, CloudFormation and VPC pages.
 
-### Configure 
+### Configure environment variables on CircleCI
 The following [environment variables](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project) must be set for the project on CircleCI via the project settings page, before the project can be built successfully.
 
 

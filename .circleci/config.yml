@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@dev:snapshot
+  aws-ecs: lokst/aws-ecs-prototype@dev:snapshot
 jobs:
   build:  
     docker:
@@ -44,18 +47,10 @@ jobs:
       - setup_remote_docker
       - attach_workspace:
           at: workspace
-      - restore_cache:
-          key: v1-{{ checksum "requirements.txt" }}
-      - run:
-          name: Install awscli
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-      - save_cache:
-          key: v1-{{ checksum "requirements.txt" }}
-          paths:
-            - "venv"
+      - aws-cli/install
+      - aws-cli/configure:
+          aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+          region: "$AWS_DEFAULT_REGION"
       - run:
           name: Load image
           command: |
@@ -63,33 +58,28 @@ jobs:
       - run:
           name: Setup common environment variables
           command: |
-            echo 'export ECR_REPOSITORY_NAME="${AWS_RESOURCE_NAME_PREFIX}"' >> $BASH_ENV
             echo 'export ECS_CLUSTER_NAME="${AWS_RESOURCE_NAME_PREFIX}-cluster"' >> $BASH_ENV
             echo 'export ECS_SERVICE_NAME="${AWS_RESOURCE_NAME_PREFIX}-service"' >> $BASH_ENV
+            echo 'export FULL_IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"' >> $BASH_ENV
       - run:
           name: Push image
           command: |
-            . venv/bin/activate
             eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$CIRCLE_SHA1
-      - run:
-          name: Deploy
-          command: |
-            . venv/bin/activate
-            export ECS_TASK_FAMILY_NAME="${AWS_RESOURCE_NAME_PREFIX}-service"
-            export ECS_CONTAINER_DEFINITION_NAME="${AWS_RESOURCE_NAME_PREFIX}-service"
-            export EXECUTION_ROLE_ARN="arn:aws:iam::$AWS_ACCOUNT_ID:role/${AWS_RESOURCE_NAME_PREFIX}-ecs-execution-role"
-            ./deploy.sh
+            docker push $FULL_IMAGE_NAME
+      - aws-ecs/deploy-service-update:
+          family: "${ECS_SERVICE_NAME}"
+          cluster-name: "${ECS_CLUSTER_NAME}"
+          container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
+          verify-revision-deployment-stable: true
       - run:
           name: Test deployment (Please manually tear down AWS resources after use, if desired)
           command: |
-            . venv/bin/activate
             TARGET_GROUP_ARN=$(aws ecs describe-services --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME | jq -r '.services[0].loadBalancers[0].targetGroupArn')
             ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
             ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
-            curl --retry 10 http://$ELB_DNS_NAME | grep "Hello World!"
+            set -x
+            curl -s --retry 10 http://$ELB_DNS_NAME | grep "Hello World!"
 workflows:
-  version: 2
   build-deploy:
     jobs:
       - build

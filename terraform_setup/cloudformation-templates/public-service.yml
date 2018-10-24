@@ -79,6 +79,11 @@ Resources:
           Essential: true
           PortMappings:
             - ContainerPort: !Ref 'ContainerPort'
+          Environment:
+            - Name: VERSION_INFO
+              Value: 'v0'
+            - Name: BUILD_DATE
+              Value: '-'
 
   # The service. The service is a resource which allows you to run multiple
   # copies of a type of task, and gather up their logs and metrics, as well

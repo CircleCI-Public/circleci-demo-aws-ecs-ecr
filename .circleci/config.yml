@@ -70,6 +70,7 @@ jobs:
           family: "${ECS_SERVICE_NAME}"
           cluster-name: "${ECS_CLUSTER_NAME}"
           container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
+          container-env-var-updates: "container=${ECS_SERVICE_NAME},name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=${ECS_SERVICE_NAME},name=BUILD_DATE,value=\"$(date)\""
           verify-revision-deployment-stable: true
       - run:
           name: Test deployment (Please manually tear down AWS resources after use, if desired)
@@ -78,7 +79,10 @@ jobs:
             ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
             ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
             set -x
-            curl -s --retry 10 http://$ELB_DNS_NAME | grep "Hello World!"
+            for attempt in {1..25}; do
+              curl -s --retry 10 http://$ELB_DNS_NAME | grep "Hello World!"
+              curl -s --retry 10 http://$ELB_DNS_NAME | grep "${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM}"
+            done
 workflows:
   build-deploy:
     jobs:

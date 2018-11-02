@@ -71,7 +71,7 @@ jobs:
           cluster-name: "${ECS_CLUSTER_NAME}"
           container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
           container-env-var-updates: "container=${ECS_SERVICE_NAME},name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=${ECS_SERVICE_NAME},name=BUILD_DATE,value=\"$(date)\""
-          verify-revision-deployment-stable: true
+          verify-revision-is-deployed: true
       - run:
           name: Test deployment (Please manually tear down AWS resources after use, if desired)
           command: |

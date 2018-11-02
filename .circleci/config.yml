@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@dev:snapshot
-  aws-ecs: lokst/aws-ecs-prototype@dev:snapshot
+  aws-ecs: sandbox/aws-ecs@dev:0.0.2
 jobs:
   build:  
     docker:

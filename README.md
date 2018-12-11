@@ -11,6 +11,10 @@ deploy to AWS ECS from ECR on CircleCI 2.0.
 This project builds and deploys a "Hello World" Go webapp. It provides an example of how to build and test a Dockerized 
 web application on [CircleCI](https://circleci.com), push the Docker image to an Amazon Elastic Container Registry (ECR), and then deploy to Amazon Elastic Container Service (ECS) using AWS Fargate.
 
+## Alternative branches
+* [Using Orbs](https://github.com/CircleCI-Public/circleci-demo-aws-ecs-ecr/tree/orbs)
+* [Simplified Orb Demo](https://github.com/CircleCI-Public/circleci-demo-aws-ecs-ecr/tree/simple_orb_demo)
+
 ## Prerequisites
 ### Set up required AWS resources
 Builds of this project rely on AWS resources to be present in order to succeed. For convenience, the prerequisite AWS resources may be created using the terraform scripts procided in the `terraform_setup` directory.

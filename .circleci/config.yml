@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@dev:snapshot
-  aws-ecs: sandbox/aws-ecs@dev:0.0.2
+  aws-cli: circleci/aws-cli@0.1.4
+  aws-ecs: circleci/aws-ecs@0.0.3
 jobs:
   build:  
     docker:
@@ -50,7 +50,7 @@ jobs:
       - aws-cli/install
       - aws-cli/configure:
           aws-access-key-id: "$AWS_ACCESS_KEY_ID"
-          region: "$AWS_DEFAULT_REGION"
+          aws-region: "$AWS_DEFAULT_REGION"
       - run:
           name: Load image
           command: |

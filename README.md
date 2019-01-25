@@ -1,4 +1,4 @@
-circleci-demo-aws-ecs-ecr
+# CircleCI AWS ECS ECR Demo ![CircleCI status](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr.svg "CircleCI status")
 =========================
 
 [![CircleCI](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr.svg?style=svg)](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr)

@@ -32,20 +32,20 @@ deploy_cluster() {
 }
 
 make_task_def(){
-	task_template='[
-		{
-			"name": "%s",
-			"image": "%s.dkr.ecr.%s.amazonaws.com/%s:%s",
-			"essential": true,
-			"portMappings": [
-				{
-					"containerPort": 8080
-				}
-			]
-		}
-	]'
-	
-   	task_def=$(printf "$task_template" $ECS_CONTAINER_DEFINITION_NAME $AWS_ACCOUNT_ID $AWS_DEFAULT_REGION $ECR_REPOSITORY_NAME $CIRCLE_SHA1)
+    task_template='[
+        {
+            "name": "%s",
+            "image": "%s.dkr.ecr.%s.amazonaws.com/%s:%s",
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 8080
+                }
+            ]
+        }
+    ]'
+    
+    task_def=$(printf "$task_template" $ECS_CONTAINER_DEFINITION_NAME $AWS_ACCOUNT_ID $AWS_DEFAULT_REGION $ECR_REPOSITORY_NAME $CIRCLE_SHA1)
 }
 
 register_definition() {

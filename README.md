@@ -1,4 +1,4 @@
-# CircleCI Demo: AWS ECS ECR ![CircleCI status](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr.svg "CircleCI status")
+# CircleCI Demo: AWS ECS ECR [![CircleCI status](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr.svg "CircleCI status")](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr)
 
 ## Deploy to AWS ECS from ECR via CircleCI 2.0 (Example Project)
 This project is an update of the https://github.com/circleci/go-ecs-ecr project to

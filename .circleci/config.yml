@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@0.0.2
-  aws-ecs: circleci/aws-ecs@0.0.3
+  aws-ecs: circleci/aws-ecs@0.0.8
 workflows:
   build-and-deploy:
     jobs:
@@ -16,4 +16,13 @@ workflows:
           aws-region: ${AWS_DEFAULT_REGION}
           family: "${AWS_RESOURCE_NAME_PREFIX}-service"
           cluster-name: "${AWS_RESOURCE_NAME_PREFIX}-cluster"
-          container-image-name-updates: "container=${AWS_RESOURCE_NAME_PREFIX}-service,tag=${CIRCLE_SHA1}"
+          container-image-name-updates: "container=${AWS_RESOURCE_NAME_PREFIX}-service,image-and-tag=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_RESOURCE_NAME_PREFIX}:${CIRCLE_SHA1}"
+          verify-revision-is-deployed: true
+          post-steps:
+            - run:
+                name: Test the deployment
+                command: |
+                  TARGET_GROUP_ARN=$(aws ecs describe-services --cluster ${AWS_RESOURCE_NAME_PREFIX}-cluster --services ${AWS_RESOURCE_NAME_PREFIX}-service | jq -r '.services[0].loadBalancers[0].targetGroupArn')
+                  ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
+                  ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
+                  curl -s --retry 10 http://$ELB_DNS_NAME | grep "Welcome to nginx!"

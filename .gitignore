@@ -1,2 +1,5 @@
 # terraform
 **/.terraform/*
+*.tfstate.lock.info
+*.tfstate
+*/terraform.tfvars

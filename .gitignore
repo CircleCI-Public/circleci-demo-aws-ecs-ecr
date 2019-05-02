@@ -1,2 +1,8 @@
 # terraform
 **/.terraform/*
+*.tfstate.lock.info
+*.tfstate
+*.tfstate.backup
+*/terraform.tfvars
+
+.DS_Store

@@ -1,4 +1,4 @@
-# CircleCI Demo: AWS ECS ECR [![CircleCI status](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr.svg "CircleCI status")](https://circleci.com/gh/CircleCI-Public/circleci-demo-aws-ecs-ecr)
+# CircleCI Demo: AWS ECS ECR [![CircleCI status](https://circleci.com/gh/ozooxo/circleci-demo-aws-ecs-ecr.svg "CircleCI status")](https://circleci.com/gh/ozooxo/circleci-demo-aws-ecs-ecr)
 
 ## Deploy to AWS ECS from ECR via CircleCI 2.0 using Orbs (Example Project)
 This project provides an example of how to use orbs to conveniently build a Docker image on [CircleCI](https://circleci.com), push the Docker image to an Amazon Elastic Container Registry (ECR), and then deploy to Amazon Elastic Container Service (ECS) using AWS Fargate. Specifically, the [aws-ecr](https://circleci.com/orbs/registry/orb/circleci/aws-ecr) and the [aws-ecs](https://circleci.com/orbs/registry/orb/circleci/aws-ecs) Orbs will be used in this project.

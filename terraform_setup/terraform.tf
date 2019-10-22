@@ -2,7 +2,7 @@ provider "aws" {
   access_key = "${var.aws_access_key}"
   secret_key = "${var.aws_secret_key}"
   region     = "${var.aws_region}"
-  version = "~> 1.35"
+  version = "~> 2.7"
 }
 
 locals {
@@ -27,7 +27,7 @@ resource "aws_cloudformation_stack" "vpc" {
   name = "${local.aws_vpc_stack_name}"
   template_body = "${file("cloudformation-templates/public-vpc.yml")}"
   capabilities = ["CAPABILITY_NAMED_IAM"]
-  parameters {
+  parameters = {
     ClusterName = "${local.aws_ecs_cluster_name}"
     ExecutionRoleName = "${local.aws_ecs_execution_role_name}"
   }
@@ -39,7 +39,7 @@ resource "aws_cloudformation_stack" "ecs_service" {
   template_body = "${file("cloudformation-templates/public-service.yml")}"
   depends_on = ["aws_cloudformation_stack.vpc", "aws_ecr_repository.demo-app-repository"]
 
-  parameters {
+  parameters = {
     ContainerMemory = 1024
     ContainerPort = 80
     StackName = "${local.aws_vpc_stack_name}"

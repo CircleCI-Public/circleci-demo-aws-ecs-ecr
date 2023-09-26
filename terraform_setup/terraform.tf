@@ -48,7 +48,7 @@ resource "aws_cloudformation_stack" "vpc" {
 resource "aws_cloudformation_stack" "ecs_service" {
   name = "${local.aws_ecs_service_stack_name}"
   template_body = "${file("cloudformation-templates/public-service.yml")}"
-  depends_on = ["aws_cloudformation_stack.vpc", "aws_ecr_repository.demo-app-repository"]
+  depends_on = [aws_cloudformation_stack.vpc, aws_ecr_repository.demo-app-repository]
 
   parameters = {
     ContainerMemory = 1024
